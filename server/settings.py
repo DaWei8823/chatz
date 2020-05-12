@@ -1,0 +1,2 @@
+FORMAT = "utf-8"
+HEADER_LENGTH = 80
