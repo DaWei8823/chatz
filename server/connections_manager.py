@@ -16,6 +16,7 @@ class ConnectionsManager:
         socket = self._active_connections.get_socket(address)
         self._logged_in_users[username] = socket
 
+
     def send(self, username:str, event_type:str, event_obj):
         socket = self._logged_in_users.get(username)
         if not socket:
@@ -23,7 +24,9 @@ class ConnectionsManager:
         else:
             encoded = utils.encode_event(event_type, event_obj)
             socket.send(encoded)
-        
+    
+    def is_logged_in(self, username):
+        return username in  self._logged_in_users
 
 
 

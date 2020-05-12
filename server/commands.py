@@ -2,8 +2,16 @@ from dataclasses import dataclass
 from db import Db
 from models import Address
 
+@dataclass
+class CommandContext:
+    username:str
+    address:Address
+    def is_authenticated(self):
+        return self.username is not None
+
+@dataclass
 class BaseCommand:
-    pass
+    context:CommandContext
 
 #Create account
 #Login
@@ -13,30 +21,29 @@ class BaseCommand:
 
 @dataclass
 class CreateAccountCommand(BaseCommand):
-    username:str
-    password:str    
+    new_username:str
+    new_password:str    
 
 
 @dataclass
 class LoginCommand(BaseCommand):
-    username:str
-    password:str
-    address:Address
-
-        
+    cred_username:str
+    cred_password:str
 
 
-# @dataclass
-# class AddFriendCommand(BaseCommand):
-#     db:Db
-#     username:str
-#     friend_username:str
 
-#     def exec(self):
-#         self.validate()
-#         self.db.add_friend(self.username, self.friend_username)
+@dataclass 
+class AddFriendCommand(BaseCommand):
+    friend_username:str
 
-#     def validate(self):
-#         if not self.db.username_exists(self.friend_username):
-#             raise InvalidUsernameException(f"No user with username:{self.friend_username}")
+
+@dataclass
+class SendMessageCommand(BaseCommand):
+    to_username:str
+    msg:str
+
+@dataclass
+class UserLoggedOutCommand(BaseCommand):
+    pass
+
 

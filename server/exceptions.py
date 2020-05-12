@@ -10,3 +10,6 @@ class InvalidUsernamePasswordException(BaseException):
 
 class InvalidUsernameException(BaseException):
    status_code = 400
+
+class UserNotLoggedInException(BaseException):
+   status_code = 400
