@@ -1,19 +1,26 @@
 from dataclasses import dataclass
 
+
 class BaseEvent:
     pass
 
+
 @dataclass
 class UserLoggedInEvent:
-    username:str
+    username: str
+
+@dataclass
+class UserLoggedOutEvent:
+    username: str
 
 @dataclass
 class FriendAddedEvent:
-    username:str
-    friend_username:str
+    username: str
+    friend_username: str
+
 
 @dataclass
 class MessageSentEvent:
-    to_username:str
-    from_username:str
-    msg:str
+    to_username: str
+    from_username: str
+    msg: str

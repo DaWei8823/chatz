@@ -1,7 +1,6 @@
 class BaseException(Exception):
    status_code = 500
 
-
 class UsernameAlreadyExistsException(BaseException):
    status_code = 400
 
