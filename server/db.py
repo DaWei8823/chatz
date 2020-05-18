@@ -21,13 +21,13 @@ class Db:
 
     def create_user(self, username:str, password:str) -> None:
         password_hash = bcrypt.hashpw(password.encode("utf-8"), self._db_salt)
-        with self._conn:
-            self._conn.execute("INSERT INTO User (Username, PasswordHash) VALUES (?,?)", (username, password_hash))
+        with self._conn as conn:
+            conn.execute("INSERT INTO User (Username, PasswordHash) VALUES (?,?)", (username, password_hash))
 
     def is_valid(self, username:str, password:str) -> bool:
         password_hash = bcrypt.hashpw(password.encode("utf-8"), self._db_salt)
-        with self._conn:
-            cursor = self._conn.cursor()
+        with self._conn as conn:
+            cursor = conn.cursor()
             cursor.execute("SELECT COUNT(*) FROM User WHERE Username = ? AND PasswordHash = ?", (username, password_hash))
             return cursor.fetchone() > 0
 
