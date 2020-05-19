@@ -3,12 +3,29 @@ from socket import socket
 from models import Address
 import jsonpickle as jp
 from settings import FORMAT
+import select
 import utils
+from command import BaseCommand, CommandContext
+from command_executor import CommandExecutor
+import settings
 
-# TODO: implement forced logout if no message receieved
 class ConnectionsManager:
     def __init__(self):
-        self._active_connections = SocketLookup()
+        self._active_connections = _SocketLookup()
+        self._command_executor = CommandExecutor()
+    
+    def start_listen(self):
+        sockets = self._active_connections.get_socket_list()
+        while True:
+            read_sockets, _, exception_sockets = select.select(sockets, [], sockets)
+            for socket in read_sockets:
+                cmd = self._get_command(socket)
+                addr = self._active_connections.get_address(socket)
+                username = self._active_connections.get_username(addr)
+                cmd.context = CommandContext(addr, username)
+                self._command_executor.execute(cmd)
+            for socket in exception_sockets:
+                self.disconect_socket(socket)
 
     def authorize_connection(self, username, address: Address):
         self._active_connections.add_user_socket(username, address)
@@ -22,7 +39,6 @@ class ConnectionsManager:
         return self._active_connections.get_user_socket(username) is not None
 
     def disconect_user(self, username):
-        self._active_connections.remove_user(username)
         socket = self._active_connections.get_user_socket(username)
 
         if socket:
@@ -34,10 +50,20 @@ class ConnectionsManager:
         if socket := self._active_connections.get_socket(address):
             socket.close()
             socket.shutdown()
-            self._active_connections.remove_socket(address)
+            self._active_connections.remove_address(address)
+
+    def disconect_socket(self, socket):
+        if addr := self._active_connections.get_address(socket)
+            self.disconect(addr)       
+
+    def _get_command(self, socket:socket) -> BaseCommand:
+        msg_header = socket.recv(settings.HEADER_LENGTH)
+        cmd_type, length = msg_header.decode(settings.FORMAT).split(' ', 1)
+        msg_content = socket.recv(int(length))
+        return utils.parse_command(cmd_type, msg_content.decode(settings.FORMAT))
 
 
-class SocketLookup:
+class _SocketLookup:
     def __init__(self):
         self._addr_to_socket: Dict[Address, socket] = {}
         self._socket_to_address: Dict[socket, Address] = {}
@@ -50,6 +76,12 @@ class SocketLookup:
 
     def get_socket(self, address):
         return self._addr_to_socket[address]
+
+    def get_address(self, socket):
+        return self._socket_to_address.get(socket)
+
+    def get_username(self, address):        
+        return self._address_to_username.get(address)
 
     def add_user_socket(self, address, username):
         self._address_to_username[address] = username
@@ -70,7 +102,13 @@ class SocketLookup:
 
         self.remove_socket(addr)
 
-    def remove_socket(self, address):
-        if address in self._addr_to_socket:
-            del self._address_to_username[address]
+    def remove_address(self, address):
+        if socket := self._addr_to_socket.get(address):
+            del self._socket_to_address[socket]
             del self._addr_to_socket[address]
+        if username := self._address_to_username.get(address):
+            del self._address_to_username[address]
+            del self._username_to_address[username]   
+   
+    def get_socket_list(self):
+        return self._socket_to_address.keys()

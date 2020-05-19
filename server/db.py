@@ -17,7 +17,10 @@ class Db:
         self._conn = sqlite3.connect("authorization.db")
 
     def username_exists(self, username) -> bool:
-        pass
+        with self._conn as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT COUNT(*) FROM User WHERE Username = ?",(username,))
+            return cursor.fetchone() > 0
 
     def create_user(self, username:str, password:str) -> None:
         password_hash = bcrypt.hashpw(password.encode("utf-8"), self._db_salt)
@@ -50,7 +53,17 @@ class Db:
 
 
     def get_friends(self, username) -> List[str]:
-        pass
+        with self._conn as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                SELECT fuser.Username 
+                FROM Friend f 
+                INNER JOIN User u ON f.UserId = u.UserId
+                INNER JOIN User fuser ON f.FriendId = u.UserId
+                WHERE u.Username =?
+                """,(username,))
+                
+            return [u[0] for u in cursor.fetchall()]
 
     def _load_salt(self):
         if isfile(SALT_FILE_NAME):
