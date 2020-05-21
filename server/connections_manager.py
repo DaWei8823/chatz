@@ -8,11 +8,14 @@ import utils
 from command import BaseCommand, CommandContext
 from command_executor import CommandExecutor
 import settings
+from command_parser import CommandParser
 
 class ConnectionsManager:
-    def __init__(self):
+    def __init__(self, command_executor, event_dispatcher):
+        self._event_dispatcher = event_dispatcher
+        self._command_executor = command_executor
         self._active_connections = _SocketLookup()
-        self._command_executor = CommandExecutor()
+        self._command_parser = CommandParser()
     
     def start_listen(self):
         sockets = self._active_connections.get_socket_list()
@@ -60,7 +63,8 @@ class ConnectionsManager:
         msg_header = socket.recv(settings.HEADER_LENGTH)
         cmd_type, length = msg_header.decode(settings.FORMAT).split(' ', 1)
         msg_content = socket.recv(int(length))
-        return utils.parse_command(cmd_type, msg_content.decode(settings.FORMAT))
+        json =  msg_content.decode(settings.FORMAT)
+        return self._command_parser.parse(cmd_type, json)
 
 
 class _SocketLookup:

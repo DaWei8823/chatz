@@ -9,6 +9,3 @@ def encode_event(event_type:str, event_obj):
     
     return (header_padded + obj_encoded).encode(FORMAT)
 
-def parse_command(cmd_type, content):
-    obj_dict = json.loads(content)
-    return type(cmd_type, obj_dict)
