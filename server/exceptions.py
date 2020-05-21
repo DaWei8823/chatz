@@ -1,14 +1,17 @@
-class BaseException(Exception):
-   status_code = 500
+class UsernameAlreadyExistsException(Exception):
+   pass
 
-class UsernameAlreadyExistsException(BaseException):
-   status_code = 400
+class InvalidUsernamePasswordException(Exception):
+   pass
 
-class InvalidUsernamePasswordException(BaseException):
-   status_code = 400
+class InvalidUsernameException(Exception):
+   pass
 
-class InvalidUsernameException(BaseException):
-   status_code = 400
+class UserNotLoggedInException(Exception):
+   pass
 
-class UserNotLoggedInException(BaseException):
-   status_code = 400
+class UserNotAuthenticatedException(Exception):
+   pass
+
+class CommandNotFoundException(Exception):
+   pass
