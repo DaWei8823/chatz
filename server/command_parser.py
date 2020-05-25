@@ -15,7 +15,7 @@ class CommandParser:
 
     def _load_command_dict(self):
         self._command_dict = { attr.__name__ : getattr(commands, attr) 
-            for attr in dir(commands) 
+            for attr in dir(commands)
             if attr[:-7] == "Command" }
 
 

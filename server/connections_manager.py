@@ -9,6 +9,7 @@ from command import BaseCommand, CommandContext
 from command_executor import CommandExecutor
 import settings
 from command_parser import CommandParser
+from exceptions import CommandFailedException
 
 class ConnectionsManager:
     def __init__(self, command_executor, event_dispatcher):
@@ -22,11 +23,14 @@ class ConnectionsManager:
         while True:
             read_sockets, _, exception_sockets = select.select(sockets, [], sockets)
             for socket in read_sockets:
-                cmd = self._get_command(socket)
-                addr = self._active_connections.get_address(socket)
-                username = self._active_connections.get_username(addr)
-                cmd.context = CommandContext(addr, username)
-                self._command_executor.execute(cmd)
+                try:
+                    cmd = self._get_command(socket)
+                    addr = self._active_connections.get_address(socket)
+                    username = self._active_connections.get_username(addr)
+                    cmd.context = CommandContext(addr, username)
+                    self._command_executor.execute(cmd)
+                except Exception as e:
+                    socket.send(utils.encode_event("Error", str(e)))
             for socket in exception_sockets:
                 self.disconect_socket(socket)
 

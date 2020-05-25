@@ -124,4 +124,4 @@ class DisconectCommandHalder:
         else:
             self._connections_manager.disconnect(command.context.address)
             #don't need to publish event since user is anonymous
-        
+

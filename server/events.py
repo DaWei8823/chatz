@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-
+from commands import BaseCommand
 
 class BaseEvent:
     pass
@@ -24,3 +24,7 @@ class MessageSentEvent:
     to_username: str
     from_username: str
     msg: str
+
+@dataclass
+class ExceptionCaughtEvent:
+    
