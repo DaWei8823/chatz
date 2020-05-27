@@ -1,5 +1,10 @@
 ui
 *.pyc
+endpoint_config.py
+Chatz.db
+Salt.txt
+Log.txt
+launch.json
 
 # compiled output
 # /dist
