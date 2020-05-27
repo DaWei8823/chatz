@@ -4,8 +4,8 @@ import json
 def encode_event(event_type:str, event_obj):
     obj_encoded = json.dumps(event_obj).encode(FORMAT)
     obj_encoded_len = len(obj_encoded)
-    header = f"{event_type} {obj_encoded_len}".encode(FORMAT)
-    header_padded = f"{header}<{HEADER_LENGTH}".encode(FORMAT)
+    header = f"{event_type} {obj_encoded_len}"
+    header_padded = f"{header:<{HEADER_LENGTH}}".encode(FORMAT)
     
-    return (header_padded + obj_encoded).encode(FORMAT)
+    return (header_padded + obj_encoded)
 
