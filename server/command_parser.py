@@ -1,6 +1,6 @@
 import commands
 import json
-from exceptions import CommandNotFoundException
+from client_exceptions import CommandNotFoundException
 
 class CommandParser:
 
@@ -14,9 +14,9 @@ class CommandParser:
         return self._command_dict[command_type](**obj_dict)    
 
     def _load_command_dict(self):
-        self._command_dict = { attr.__name__ : getattr(commands, attr) 
+        self._command_dict = { attr : getattr(commands, attr) 
             for attr in dir(commands)
-            if attr[:-7] == "Command" }
+            if attr[-7:] == "Command" }
 
 
 
