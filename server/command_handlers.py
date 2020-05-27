@@ -4,7 +4,7 @@ from commands import (
     LoginCommand,
     AddFriendCommand,
     SendMessageCommand,
-    DisconnectCommand
+    DisconnectCommand,
 )
 from client_exceptions import (
     UsernameAlreadyExistsException,
@@ -12,10 +12,15 @@ from client_exceptions import (
     InvalidUsernameException,
     UserNotLoggedInException,
 )
-from db import Db
-from event_dispatcher import EventDispatcher
 from connections_manager import ConnectionsManager
-from events import UserLoggedInEvent, UserLoggedOutEvent, FriendAddedEvent, MessageSentEvent
+from db import Db
+from events import (
+    UserLoggedInEvent,
+    UserLoggedOutEvent,
+    FriendAddedEvent,
+    MessageSentEvent,
+)
+from event_dispatcher import EventDispatcher
 
 
 class BaseCommandHandler:
@@ -108,20 +113,17 @@ class DisconnectCommandHalder:
         self,
         db: Db,
         connections_manager: ConnectionsManager,
-        event_dispatcher: EventDispatcher
+        event_dispatcher: EventDispatcher,
     ):
         self._db = db
         self._connections_manager = connections_manager
         self._event_dispatcher = event_dispatcher
-    
-    def handle(self, command:DisconnectCommand):
+
+    def handle(self, command: DisconnectCommand):
         username = command.context.username
         if username:
             self._connections_manager.disconnect_user(username)
-            self._event_dispatcher.dispatch(
-                UserLoggedOutEvent(username)
-            )
+            self._event_dispatcher.dispatch(UserLoggedOutEvent(username))
         else:
             self._connections_manager.disconnect(command.context.address)
-            #don't need to publish event since user is anonymous
-
+            # don't need to publish event since user is anonymous

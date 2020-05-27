@@ -1,15 +1,15 @@
-from events import BaseEvent
-from typing import Dict
 from event_handlers import BaseEventHandler
+from events import BaseEvent
 from logging import Logger
+from typing import Dict
+
 
 class EventDispatcher:
-
-    def __init__(self, logger:Logger, event_dict:Dict[str,BaseEventHandler]):
+    def __init__(self, logger: Logger, event_dict: Dict[str, BaseEventHandler]):
         self._logger = logger
         self._event_dict = event_dict
 
-    def dispatch(self, event:BaseEvent):
+    def dispatch(self, event: BaseEvent):
         event_type = event.__class__.__name__
         try:
             if handler := self._event_dict.get(event_type):

@@ -1,5 +1,6 @@
-from dataclasses import dataclass
 from commands import BaseCommand
+from dataclasses import dataclass
+
 
 class BaseEvent:
     pass
@@ -8,8 +9,10 @@ class BaseEvent:
 @dataclass
 class UserLoggedInEvent:
     username: str
+
     def __repr__(self):
         return f"UserLoggedInEvent, username: {self.username}"
+
 
 @dataclass
 class UserLoggedOutEvent:
@@ -18,6 +21,7 @@ class UserLoggedOutEvent:
     def __repr__(self):
         return f"UserLoggedOutEvent, username: {self.username}"
 
+
 @dataclass
 class FriendAddedEvent:
     username: str
@@ -25,6 +29,7 @@ class FriendAddedEvent:
 
     def __repr__(self):
         return f"FriendAddedEvent, username: {self.username}. friend_username: {self.friend_username}"
+
 
 @dataclass
 class MessageSentEvent:

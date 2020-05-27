@@ -10,7 +10,7 @@ class CommandContext:
 
     def is_authenticated(self):
         return self.username is not None
-    
+
     def __repr__(self):
         return f"username: {self.username}, address: {self.address}"
 
@@ -18,6 +18,7 @@ class CommandContext:
 class BaseCommand:
     def __init__(self):
         self.context: CommandContext = None
+
 
 @dataclass
 class CreateAccountCommand(BaseCommand):
@@ -36,6 +37,7 @@ class LoginCommand(BaseCommand):
     def __repr__(self):
         return f"Login for {self.cred_username}"
 
+
 @dataclass
 class AddFriendCommand(BaseCommand):
     friend_username: str
@@ -51,6 +53,7 @@ class SendMessageCommand(BaseCommand):
 
     def __repr__(self):
         return f"Send Message to {self.to_username}"
+
 
 @dataclass
 class DisconnectCommand(BaseCommand):

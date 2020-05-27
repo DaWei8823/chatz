@@ -1,23 +1,30 @@
 class ClientException(Exception):
-   pass
+    pass
+
 
 class UsernameAlreadyExistsException(ClientException):
-   pass
+    pass
+
 
 class InvalidUsernamePasswordException(ClientException):
-   pass
+    pass
+
 
 class InvalidUsernameException(ClientException):
-   pass
+    pass
+
 
 class UserNotLoggedInException(ClientException):
-   pass
+    pass
+
 
 class UserNotAuthenticatedException(ClientException):
-   pass
+    pass
+
 
 class CommandNotFoundException(ClientException):
-   pass
+    pass
+
 
 class MalformedInputException(ClientException):
-   pass
+    pass

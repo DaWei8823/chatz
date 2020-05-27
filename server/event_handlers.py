@@ -1,11 +1,18 @@
-from events import BaseEvent, UserLoggedInEvent, UserLoggedOutEvent, FriendAddedEvent, MessageSentEvent
-from db import Db
 from connections_manager import ConnectionsManager
+from db import Db
+from events import (
+    BaseEvent,
+    UserLoggedInEvent,
+    UserLoggedOutEvent,
+    FriendAddedEvent,
+    MessageSentEvent
+)
 
 
 class BaseEventHandler:
-    def handle(self, event:BaseEvent):
+    def handle(self, event: BaseEvent):
         pass
+
 
 class UserLoggedInEventHandler(BaseEventHandler):
     def __init__(self, db: Db, connections_manager: ConnectionsManager):
@@ -26,7 +33,7 @@ class UserLoggedOutEventHandler(BaseEventHandler):
     def __init__(self, db: Db, connections_manager):
         self._db = db
         self._connections_manager = connections_manager
-    
+
     def handle(self, event: UserLoggedOutEvent):
         friends = self._db.get_friends(event.username)
 
