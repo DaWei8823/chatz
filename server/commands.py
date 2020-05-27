@@ -10,6 +10,9 @@ class CommandContext:
 
     def is_authenticated(self):
         return self.username is not None
+    
+    def __repr__(self):
+        return f"username: {self.username}, address: {self.address}"
 
 
 class BaseCommand:
@@ -31,7 +34,7 @@ class LoginCommand(BaseCommand):
     cred_password: str
 
     def __repr__(self):
-        return f"Login for {self.new_username}"
+        return f"Login for {self.cred_username}"
 
 @dataclass
 class AddFriendCommand(BaseCommand):
@@ -49,9 +52,6 @@ class SendMessageCommand(BaseCommand):
     def __repr__(self):
         return f"Send Message to {self.to_username}"
 
-
-
-
 @dataclass
 class DisconectCommand(BaseCommand):
-    command_type = 'DisconectCommand'
+    pass

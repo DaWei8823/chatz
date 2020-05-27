@@ -1,9 +1,13 @@
-from events import UserLoggedInEvent, UserLoggedOutEvent, FriendAddedEvent, MessageSentEvent
+from events import BaseEvent, UserLoggedInEvent, UserLoggedOutEvent, FriendAddedEvent, MessageSentEvent
 from db import Db
 from connections_manager import ConnectionsManager
 
 
-class UserLoggedInEventHandler:
+class BaseEventHandler:
+    def handle(self, event:BaseEvent):
+        pass
+
+class UserLoggedInEventHandler(BaseEventHandler):
     def __init__(self, db: Db, connections_manager: ConnectionsManager):
         self._db = db
         self._connections_manager = connections_manager
@@ -18,7 +22,7 @@ class UserLoggedInEventHandler:
                 )
 
 
-class UserLoggedOutEventHandler:
+class UserLoggedOutEventHandler(BaseEventHandler):
     def __init__(self, db: Db, connections_manager):
         self._db = db
         self._connections_manager = connections_manager
@@ -33,7 +37,7 @@ class UserLoggedOutEventHandler:
                 )
 
 
-class FriendAddedEventHandler:
+class FriendAddedEventHandler(BaseEventHandler):
     def __init__(self, db: Db, connections_manager: ConnectionsManager):
         self._db = db
         self._connections_manager = connections_manager
@@ -45,7 +49,7 @@ class FriendAddedEventHandler:
             )
 
 
-class MessageSentEventHandler:
+class MessageSentEventHandler(BaseEventHandler):
     def __init__(self, db: Db, connections_manager: ConnectionsManager):
         self._db = db
         self._connections_manager = connections_manager

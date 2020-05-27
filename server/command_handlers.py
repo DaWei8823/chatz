@@ -6,7 +6,7 @@ from commands import (
     SendMessageCommand,
     DisconectCommand
 )
-from exceptions import (
+from client_exceptions import (
     UsernameAlreadyExistsException,
     InvalidUsernamePasswordException,
     InvalidUsernameException,
