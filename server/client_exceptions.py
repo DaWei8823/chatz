@@ -18,3 +18,6 @@ class UserNotAuthenticatedException(ClientException):
 
 class CommandNotFoundException(ClientException):
    pass
+
+class MalformedInputException(ClientException):
+   pass

@@ -5,11 +5,10 @@ import jsonpickle as jp
 from settings import FORMAT
 import select
 import utils
-from command import BaseCommand, CommandContext
-from command_executor import CommandExecutor
+from commands import BaseCommand, CommandContext
+from client_exceptions import MalformedInputException
 import settings
 from command_parser import CommandParser
-from exceptions import CommandFailedException
 
 class ConnectionsManager:
     def __init__(self, command_executor, event_dispatcher):
@@ -21,6 +20,10 @@ class ConnectionsManager:
     def start_listen(self):
         sockets = self._active_connections.get_socket_list()
         while True:
+
+            if not sockets:
+                continue
+
             read_sockets, _, exception_sockets = select.select(sockets, [], sockets)
             for socket in read_sockets:
                 try:
@@ -30,9 +33,12 @@ class ConnectionsManager:
                     cmd.context = CommandContext(addr, username)
                     self._command_executor.execute(cmd)
                 except Exception as e:
-                    socket.send(utils.encode_event("Error", str(e)))
+                    socket.send(utils.encode_event("ExceptionThrown", str(e)))
             for socket in exception_sockets:
                 self.disconect_socket(socket)
+
+    def add_connection(self, address:Address, socket:socket):
+        self._active_connections.add(address, socket)
 
     def authorize_connection(self, username, address: Address):
         self._active_connections.add_user_socket(username, address)
@@ -60,15 +66,19 @@ class ConnectionsManager:
             self._active_connections.remove_address(address)
 
     def disconect_socket(self, socket):
-        if addr := self._active_connections.get_address(socket)
+        if addr := self._active_connections.get_address(socket):
             self.disconect(addr)       
 
     def _get_command(self, socket:socket) -> BaseCommand:
-        msg_header = socket.recv(settings.HEADER_LENGTH)
-        cmd_type, length = msg_header.decode(settings.FORMAT).split(' ', 1)
-        msg_content = socket.recv(int(length))
-        json =  msg_content.decode(settings.FORMAT)
-        return self._command_parser.parse(cmd_type, json)
+        try:
+            msg_header = socket.recv(settings.HEADER_LENGTH)
+            cmd_type, length = msg_header.decode(settings.FORMAT).split(' ', 1)
+            msg_content = socket.recv(int(length))
+            json =  msg_content.decode(settings.FORMAT)
+            return self._command_parser.parse(cmd_type, json)
+        except:
+            raise MalformedInputException("Malformed input")
+
 
 
 class _SocketLookup:
@@ -108,7 +118,7 @@ class _SocketLookup:
         del self._username_to_address[username]
         del self._address_to_username[addr]
 
-        self.remove_socket(addr)
+        self.remove_address(addr)
 
     def remove_address(self, address):
         if socket := self._addr_to_socket.get(address):
