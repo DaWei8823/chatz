@@ -4,7 +4,7 @@ from commands import (
     LoginCommand,
     AddFriendCommand,
     SendMessageCommand,
-    DisconectCommand
+    DisconnectCommand
 )
 from client_exceptions import (
     UsernameAlreadyExistsException,
@@ -103,7 +103,7 @@ class SendMessageCommandHandler(BaseCommandHandler):
             )
 
 
-class DisconectCommandHalder:
+class DisconnectCommandHalder:
     def __init__(
         self,
         db: Db,
@@ -114,7 +114,7 @@ class DisconectCommandHalder:
         self._connections_manager = connections_manager
         self._event_dispatcher = event_dispatcher
     
-    def handle(self, command:DisconectCommand):
+    def handle(self, command:DisconnectCommand):
         username = command.context.username
         if username:
             self._connections_manager.disconnect_user(username)

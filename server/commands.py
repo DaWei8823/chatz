@@ -53,5 +53,5 @@ class SendMessageCommand(BaseCommand):
         return f"Send Message to {self.to_username}"
 
 @dataclass
-class DisconectCommand(BaseCommand):
+class DisconnectCommand(BaseCommand):
     pass
