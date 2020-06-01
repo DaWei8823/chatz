@@ -1,4 +1,4 @@
-from commands import (
+from .commands import (
     BaseCommand,
     CreateAccountCommand,
     LoginCommand,
@@ -6,21 +6,21 @@ from commands import (
     SendMessageCommand,
     DisconnectCommand,
 )
-from client_exceptions import (
+from .client_exceptions import (
     UsernameAlreadyExistsException,
     InvalidUsernamePasswordException,
     InvalidUsernameException,
     UserNotLoggedInException,
 )
-from connections_manager import ConnectionsManager
-from db import Db
-from events import (
+from .connections_manager import ConnectionsManager
+from .db import Db
+from .events import (
     UserLoggedInEvent,
     UserLoggedOutEvent,
     FriendAddedEvent,
     MessageSentEvent,
 )
-from event_dispatcher import EventDispatcher
+from .event_dispatcher import EventDispatcher
 
 
 class BaseCommandHandler:

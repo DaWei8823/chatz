@@ -1,5 +1,5 @@
-from event_handlers import BaseEventHandler
-from events import BaseEvent
+from .event_handlers import BaseEventHandler
+from .events import BaseEvent
 from logging import Logger
 from typing import Dict
 

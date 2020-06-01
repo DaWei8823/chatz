@@ -5,6 +5,7 @@ Chatz.db
 Salt.txt
 Log.txt
 launch.json
+__pycache__
 
 # compiled output
 # /dist

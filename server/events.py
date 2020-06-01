@@ -1,4 +1,4 @@
-from commands import BaseCommand
+from .commands import BaseCommand
 from dataclasses import dataclass
 
 
@@ -39,3 +39,10 @@ class MessageSentEvent:
 
     def __repr__(self):
         return f"MessageSentEvent, from: {self.from_username}. to: {self.to_username}"
+
+class ExceptionThrownEvent:
+    msg:str
+    exception_type:str
+
+    def __repr__(self):
+        return f"{self.msg}"

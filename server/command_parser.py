@@ -1,5 +1,5 @@
-from client_exceptions import CommandNotFoundException
-import commands
+from .client_exceptions import CommandNotFoundException
+from . import commands
 import json
 
 

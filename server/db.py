@@ -89,7 +89,7 @@ def create_db():
 
         conn.execute(
             """ 
-            CREATE TABLE User (
+            CREATE TABLE IF NOT EXISTS User (
                 UserId INT PRIMARY KEY,
                 Username TEXT NOT NULL UNIQUE,
                 PasswordHash TEXT NOT NULL
@@ -99,7 +99,7 @@ def create_db():
 
         conn.execute(
             """ 
-            CREATE TABLE Friend (
+            CREATE TABLE IF NOT EXISTS Friend (
                 UserId INT,
                 FriendId INT,
                 FOREIGN KEY (UserId) REFERENCES User(UserId),

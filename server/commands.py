@@ -1,12 +1,11 @@
 from dataclasses import dataclass
-from db import Db
-from models import Address
+from .models import Address
 
 
 @dataclass
 class CommandContext:
-    username: str
     address: Address
+    username: str
 
     def is_authenticated(self):
         return self.username is not None

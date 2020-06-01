@@ -1,13 +1,13 @@
-from client_exceptions import MalformedInputException
-from command_parser import CommandParser
-from commands import BaseCommand, CommandContext
-import jsonpickle as jp
-from models import Address
+from .client_exceptions import MalformedInputException
+from .command_parser import CommandParser
+from .commands import BaseCommand, CommandContext
+from .models import Address
+from .events import ExceptionThrownEvent
 import select
-import settings
+from  . import settings
 from socket import socket
 from typing import Dict, Tuple
-import utils
+from . import utils
 
 
 class ConnectionsManager:
@@ -23,17 +23,17 @@ class ConnectionsManager:
 
             if not sockets:
                 continue
-
+            
             read_sockets, _, exception_sockets = select.select(sockets, [], sockets)
             for socket in read_sockets:
                 try:
                     cmd = self._get_command(socket)
-                    addr = self._active_connections.get_address(socket)
-                    username = self._active_connections.get_username(addr)
-                    cmd.context = CommandContext(addr, username)
                     self._command_executor.execute(cmd)
                 except Exception as e:
-                    socket.send(utils.encode_event("ExceptionThrown", str(e)))
+                    socket.send(
+                        utils.encode_event(
+                            "ExceptionThrownEvent", 
+                            ExceptionThrownEvent(str(e), e.__class__.__name__)))
             for socket in exception_sockets:
                 self.disconect_socket(socket)
 
@@ -73,11 +73,20 @@ class ConnectionsManager:
         try:
             msg_header = socket.recv(settings.HEADER_LENGTH)
             cmd_type, length = msg_header.decode(settings.FORMAT).split(" ", 1)
+            
             msg_content = socket.recv(int(length))
             json = msg_content.decode(settings.FORMAT)
-            return self._command_parser.parse(cmd_type, json)
+
+            cmd = self._command_parser.parse(cmd_type, json)
+            cmd.context = self._get_command_context(socket)
+            return cmd
         except:
             raise MalformedInputException("Malformed input")
+
+    def _get_command_context(self, socket):
+        addr = self._active_connections.get_address(socket)
+        username = self._active_connections.get_username(addr)
+        return CommandContext(addr, username)
 
 
 class _SocketLookup:

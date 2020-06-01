@@ -1,6 +1,6 @@
-from connections_manager import ConnectionsManager
-from db import Db
-from events import (
+from .connections_manager import ConnectionsManager
+from .db import Db
+from .events import (
     BaseEvent,
     UserLoggedInEvent,
     UserLoggedOutEvent,

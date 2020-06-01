@@ -1,10 +1,10 @@
-from client_exceptions import (
+from .client_exceptions import (
     UserNotAuthenticatedException,
     CommandNotFoundException,
     ClientException,
 )
-from commands import BaseCommand
-from command_handlers import BaseCommandHandler
+from .commands import BaseCommand
+from .command_handlers import BaseCommandHandler
 from logging import Logger
 from typing import Tuple, Dict
 
