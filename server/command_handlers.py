@@ -30,15 +30,15 @@ class BaseCommandHandler:
 
 class CreateAccountCommandHandler(BaseCommandHandler):
     def __init__(self, db: Db):
-        self.db = db
+        self._db = db
 
     def handle(self, command: CreateAccountCommand):
-        if self.db.username_exists(command.new_username):
+        if self._db.username_exists(command.new_username):
             raise UsernameAlreadyExistsException(
-                f"username: {command.username} already taken"
+                f"username: {command.new_username} already taken"
             )
         else:
-            self.db.create_user(command.new_username, command.new_password)
+            self._db.create_user(command.new_username, command.new_password)
 
 
 class LoginCommandHandler(BaseCommandHandler):

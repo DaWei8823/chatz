@@ -40,6 +40,7 @@ class MessageSentEvent:
     def __repr__(self):
         return f"MessageSentEvent, from: {self.from_username}. to: {self.to_username}"
 
+@dataclass
 class ExceptionThrownEvent:
     msg:str
     exception_type:str

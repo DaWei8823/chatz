@@ -11,13 +11,13 @@ DB_NAME = "Chatz.db"
 class Db:
     def __init__(self):
         self._load_salt()
-        self._conn = sqlite3.connect(DB_NAME)
+        self._conn = sqlite3.connect(DB_NAME, check_same_thread=False)
 
     def username_exists(self, username) -> bool:
         with self._conn as conn:
             cursor = conn.cursor()
             cursor.execute("SELECT COUNT(*) FROM User WHERE Username = ?", (username,))
-            return cursor.fetchone() > 0
+            return cursor.fetchone()[0] > 0
 
     def create_user(self, username: str, password: str) -> None:
         password_hash = bcrypt.hashpw(password.encode("utf-8"), self._db_salt)
@@ -90,7 +90,7 @@ def create_db():
         conn.execute(
             """ 
             CREATE TABLE IF NOT EXISTS User (
-                UserId INT PRIMARY KEY,
+                UserId INTEGER PRIMARY KEY,
                 Username TEXT NOT NULL UNIQUE,
                 PasswordHash TEXT NOT NULL
             )

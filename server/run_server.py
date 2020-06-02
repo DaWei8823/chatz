@@ -14,7 +14,7 @@ from .commands import (
     DisconnectCommand,
 )
 from .connections_manager import ConnectionsManager
-from .db import Db
+from .db import Db, create_db
 from . import endpoint_config
 from .event_dispatcher import EventDispatcher
 from .event_handlers import (
@@ -42,6 +42,7 @@ logger = logging.getLogger()
 def run():
 # instantiate db
     db = Db()
+    create_db()
 
     # instantiate connection manager
     conn_mngr = ConnectionsManager(None, None)
@@ -61,13 +62,13 @@ def run():
     executor = CommandExecutor(
         logger,
         {
-            CreateAccountCommand.__name__: CreateAccountCommandHandler(db),
-            LoginCommand.__name__: LoginCommandHandler(db, conn_mngr, dispatcher),
-            AddFriendCommand.__name__: AddFriendCommandHandler(db, dispatcher),
-            SendMessageCommand.__name__: SendMessageCommandHandler(
+            CreateAccountCommand.__name__: (False, CreateAccountCommandHandler(db)),
+            LoginCommand.__name__: (False, LoginCommandHandler(db, conn_mngr, dispatcher)),
+            AddFriendCommand.__name__: (True, AddFriendCommandHandler(db, dispatcher)),
+            SendMessageCommand.__name__: (True, SendMessageCommandHandler(
                 db, conn_mngr, dispatcher
-            ),
-            DisconnectCommand.__name__: DisconnectCommandHalder(db, conn_mngr, dispatcher),
+            )),
+            DisconnectCommand.__name__: (False, DisconnectCommandHalder(db, conn_mngr, dispatcher)),
         },
     )
 

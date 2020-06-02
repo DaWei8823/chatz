@@ -1,4 +1,4 @@
-from .client_exceptions import MalformedInputException
+from .client_exceptions import ClientException, MalformedInputException
 from .command_parser import CommandParser
 from .commands import BaseCommand, CommandContext
 from .models import Address
@@ -80,6 +80,9 @@ class ConnectionsManager:
             cmd = self._command_parser.parse(cmd_type, json)
             cmd.context = self._get_command_context(socket)
             return cmd
+        except ClientException:
+            raise
+        #TODO: more spcific error handling as to not assume problem with client
         except:
             raise MalformedInputException("Malformed input")
 

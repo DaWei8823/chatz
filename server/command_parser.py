@@ -1,6 +1,6 @@
 from .client_exceptions import CommandNotFoundException
 from . import commands
-import json
+from json import loads
 
 
 class CommandParser:
@@ -12,7 +12,7 @@ class CommandParser:
             raise CommandNotFoundException(
                 f"Cannot parse command type: {command_type} because it is not defined"
             )
-        obj_dict = json.loads(json)
+        obj_dict = loads(json)
         return self._command_dict[command_type](**obj_dict)
 
     def _load_command_dict(self):

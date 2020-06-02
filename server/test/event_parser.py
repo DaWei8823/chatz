@@ -1,5 +1,5 @@
 from .. import events
-import json
+from json import loads
 
 class EventParser:
 
@@ -10,7 +10,7 @@ class EventParser:
         if event_type not in self._event_dict:
             raise ValueError(f"Can't parse event of event type {event_type}")
         
-        obj_dict = json.loads(json)
+        obj_dict = loads(json)
         return self._event_dict[event_type](**obj_dict)   
 
     def _load_event_dict(self):
